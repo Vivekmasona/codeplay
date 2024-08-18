@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Deployer</title>
+</head>
+<body>
+    <h1>Paste Your Code Below</h1>
+    <form id="deployForm">
+        <textarea id="userCode" rows="10" cols="50" placeholder="Paste your HTML/CSS/JS code here"></textarea><br><br>
+        <button type="submit">Deploy</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        document.getElementById('deployForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const userCode = document.getElementById('userCode').value;
+
+            const response = await fetch('/deploy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: userCode })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                document.getElementById('result').innerHTML = `Your code is deployed at: <a href="${result.url}" target="_blank">${result.url}</a>`;
+            } else {
+                document.getElementById('result').innerText = 'Error deploying code';
+            }
+        });
+    </script>
+</body>
+</html>
